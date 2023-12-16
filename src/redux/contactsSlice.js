@@ -1,32 +1,46 @@
-import { createSlice, nanoid } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import { fetchContacts, addContact, deleteContact } from './operations';
+const handleLoading = state => {
+  state.isLoading = true;
+};
+const handleRejected = (state, action) => {
+  state.isLoading = false;
+  state.error = action.payload;
+};
+const handleFulfilled = state => {
+  state.isLoading = false;
+  state.error = null;
+};
 const contactsSlice = createSlice({
   name: 'contacts',
-  initialState: [
-    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-  ],
-  reducers: {
-    addContact: {
-      reducer: (state, action) => {
-        state.push(action.payload);
-      },
-      prepare: (name, number) => ({
-        payload: {
-          id: nanoid(),
-          name,
-          number,
-        },
-      }),
-    },
-    deleteContact: (state, action) => {
-      state.splice(
-        state.findIndex(contact => contact.id === action.payload),
-        1
-      );
-    },
+  initialState: {
+    contacts: [],
+    isLoading: false,
+    error: null,
+  },
+  extraReducers: builder => {
+    builder
+      .addCase(fetchContacts.pending, handleLoading)
+      .addCase(fetchContacts.fulfilled, (state, action) => {
+        handleFulfilled(state);
+        state.contacts = action.payload ?? [];
+      })
+      .addCase(fetchContacts.rejected, handleRejected)
+      .addCase(addContact.pending, handleLoading)
+      .addCase(addContact.fulfilled, (state, action) => {
+        handleFulfilled(state);
+        state.contacts.push(action.payload);
+      })
+      .addCase(addContact.rejected, handleRejected)
+      .addCase(deleteContact.pending, handleLoading)
+      .addCase(deleteContact.fulfilled, (state, action) => {
+        handleFulfilled(state);
+        state.contacts.splice(
+          state.contacts.findIndex(x => x.id === action.payload),
+          1
+        );
+      })
+      .addCase(deleteContact.rejected, handleRejected);
   },
 });
-export const { addContact, deleteContact } = contactsSlice.actions;
 export const contactsReducer = contactsSlice.reducer;

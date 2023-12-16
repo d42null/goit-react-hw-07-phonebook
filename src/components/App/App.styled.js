@@ -8,7 +8,7 @@ export const Container = styled.div`
   font-size: 20px;
   color: #010101;
   flex-direction: column;
-  background-color: #eee;
+  background-color: #aaa;
 `;
 export const Title = styled.h1`
   font-size: 32px;
@@ -18,3 +18,6 @@ export const ContactsTitle = styled.h1`
   font-size: 24px;
   margin: 8px;
 `;
+export const Error = styled.b`
+color: purple;
+`

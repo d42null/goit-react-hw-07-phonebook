@@ -9,12 +9,7 @@ export const Filter = () => {
   return (
     <Label>
       Find contacts by name
-      <input
-        name="filter"
-        // value={filter}
-        type="text"
-        onChange={onFilterChange}
-      />
+      <input name="filter" autoFocus type="text" onChange={onFilterChange} />
     </Label>
   );
 };
